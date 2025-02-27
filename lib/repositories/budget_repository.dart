@@ -52,6 +52,19 @@ class BudgetRepository {
     return null;
   }
 
+  Future<double> getTotalBudgetForUser(int userId, int month, int year) async {
+    final db = await dbHelper.database;
+    final result = await db.rawQuery(
+        'SELECT SUM(amount) as total_budget FROM budget_limits WHERE user_id = ? AND month = ? AND year = ?',
+        [userId, month, year]
+    );
+
+    if (result.isNotEmpty && result.first['total_budget'] != null) {
+      return (result.first['total_budget'] as num).toDouble();
+    }
+    return 0.0;
+  }
+
   Future<List<BudgetLimit>> getAllBudgetsForPeriod(int userId, int month, int year) async {
     final db = await dbHelper.database;
     final List<Map<String, dynamic>> maps = await db.query(

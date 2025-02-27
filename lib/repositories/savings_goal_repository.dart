@@ -14,6 +14,23 @@ class SavingsGoalRepository {
     return await db.insert('savings_goals', goal.toMap());
   }
 
+  Future<double> getSavingsProgressForUser(int userId) async {
+    final db = await dbHelper.database;
+    final result = await db.rawQuery(
+        'SELECT SUM(saved_amount) as total_saved, SUM(target_amount) as total_target FROM savings_goals WHERE user_id = ?',
+        [userId]
+    );
+
+    if (result.isNotEmpty && result.first['total_saved'] != null && result.first['total_target'] != null) {
+      double totalSaved = (result.first['total_saved'] as num).toDouble();
+      double totalTarget = (result.first['total_target'] as num).toDouble();
+
+      if (totalTarget == 0) return 0.0; // Avoid division by zero
+      return (totalSaved / totalTarget) * 100; // Return progress as a percentage
+    }
+    return 0.0;
+  }
+
   Future<List<SavingsGoal>> getSavingsGoalsForUser(int userId) async {
     final db = await dbHelper.database;
     final List<Map<String, dynamic>> maps = await db.query(
