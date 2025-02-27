@@ -34,7 +34,7 @@ Installation
 
 Clone the Repository
 
-git clone https://github.com/nestormuk/smart-expense-tracker.git
+git clone https://github.com/nestormuk/student-app-tracker.git
 cd smart-expense-tracker
 
 Install Dependencies
